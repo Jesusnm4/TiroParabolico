@@ -29,7 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public class tiroparabolico extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener, ActionListener {
+public class tiroparabolico extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
     private static final long serialVersionUID = 1L;
     private boolean colXD;  // Verifica que el caja no colisione en la derecha
@@ -54,14 +54,13 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private boolean teclaIzquierda;
     private JButton playStopBtn;
     private boolean play;
-    private ImageIcon playImage;	//Imagen del botón Play
-    private ImageIcon stopImage;	//Imagen del botón Stop
+    private boolean sonidos; // bool que determina si se pueden hacer sonidos o no
+    
     
     public  tiroparabolico() {
         play = true;
-        playImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("play.png"));
-         stopImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("stop.png"));
         this.setSize(700, 600);
+        sonidos = true;
         teclaDerecha = false;
         teclaIzquierda = false;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -173,6 +172,9 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         if (e.getKeyCode() == KeyEvent.VK_P) {
             pausa = !pausa;
         }
+        if (e.getKeyCode() == KeyEvent.VK_S) {
+            pausa = !pausa;
+        }
         
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             teclaIzquierda = true;
@@ -182,6 +184,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
     }
 
+    
     public void keyTyped(KeyEvent e) {
 
     }
@@ -231,7 +234,6 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     }
 
     public void paint1(Graphics g) {
-        
         if (box != null && ball != null) {
 
             g.drawImage(box.getImagenI(), box.getPosX(), box.getPosY(), this);
