@@ -6,7 +6,6 @@
 package tiroparabolico;
 
 import java.awt.event.ActionEvent;
-import java.awt.ActionListener;
 import java.awt.Toolkit;
 import java.awt.Cursor;
 import java.awt.BorderLayout;
