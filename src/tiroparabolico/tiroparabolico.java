@@ -40,9 +40,13 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private boolean derecha;
     private SoundClip atrapaPelota;	//Sonido acierto
     private SoundClip perdio; //Sonido chocaPelota con applet
+    private boolean teclaDerecha;
+    private boolean teclaIzquierda;
     
     public  tiroparabolico() {
         this.setSize(700, 600);
+        teclaDerecha = false;
+        teclaIzquierda = false;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         atrapaPelota = new SoundClip("Sonidos/Atrapa.wav");
         perdio = new SoundClip("Sonidos/Cae.wav");
@@ -51,7 +55,8 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         derecha = false;
         score = 0;
         ball = new Pelota (0,0);
-        ball.setPosX(randX);
+        ball.setPosX(getWidth()/3);
+        ball.setPosY(getHeight()/2);
         ball.setPosY(randY);
         box = new Caja(0, 0);
         box.setPosX((getWidth() / 2 - box.getAncho() / 2));
@@ -101,6 +106,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
         tiempoActual += tiempoTranscurrido;
         box.actualiza(tiempoTranscurrido);
+        ball.actualiza(tiempoTranscurrido);
       
             if (colXI) {
                 box.setPosX(0);
@@ -109,6 +115,15 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             if (colXD) {
                 box.setPosX(getWidth() - box.getAncho());
                 colXD = false;
+            }
+            
+            if (teclaDerecha) {
+                box.setPosX(box.getPosX() + 15);
+                teclaDerecha = false;
+            }
+            if (teclaIzquierda) {
+                box.setPosX(box.getPosX() - 15);
+                teclaIzquierda = false;
             }
 
         }
@@ -136,6 +151,13 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
 
         if (e.getKeyCode() == KeyEvent.VK_P) {
             pausa = !pausa;
+        }
+        
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            teclaIzquierda = true;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            teclaDerecha = true;
         }
     }
 
@@ -192,6 +214,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         if (box != null && ball != null) {
 
             g.drawImage(box.getImagenI(), box.getPosX(), box.getPosY(), this);
+            g.drawImage(ball.getImagenI(), ball.getPosX(), ball.getPosY(), this);
 
             if (pausa) {
                 g.setFont(new Font("default", Font.BOLD, 16));
