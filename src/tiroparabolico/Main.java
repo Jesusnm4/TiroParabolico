@@ -10,13 +10,15 @@ package tiroparabolico;
  *
  * @author JesusN
  */
-public class TiroParabolico {
+public class Main {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        tiroparabolico tiro = new tiroparabolico();
+        tiro.setVisible(true);
     }
     
 }
