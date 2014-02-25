@@ -5,7 +5,17 @@
  */
 package tiroparabolico;
 
+import java.awt.event.ActionEvent;
+import java.awt.ActionListener;
+import java.awt.Toolkit;
+import java.awt.Cursor;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.Color;
@@ -19,7 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-public class tiroparabolico extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener {
+public class tiroparabolico extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener, ActionListener {
 
     private static final long serialVersionUID = 1L;
     private boolean colXD;  // Verifica que el caja no colisione en la derecha
@@ -42,8 +52,15 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private SoundClip perdio; //Sonido chocaPelota con applet
     private boolean teclaDerecha;
     private boolean teclaIzquierda;
+    private JButton playStopBtn;
+    private boolean play;
+    private ImageIcon playImage;	//Imagen del botón Play
+    private ImageIcon stopImage;	//Imagen del botón Stop
     
     public  tiroparabolico() {
+        play = true;
+        playImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("play.png"));
+         stopImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("stop.png"));
         this.setSize(700, 600);
         teclaDerecha = false;
         teclaIzquierda = false;
@@ -105,8 +122,12 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
 
         long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
         tiempoActual += tiempoTranscurrido;
-        box.actualiza(tiempoTranscurrido);
         ball.actualiza(tiempoTranscurrido);
+        
+        if(teclaDerecha || teclaIzquierda){
+            box.actualiza(tiempoTranscurrido);
+        }
+   
       
             if (colXI) {
                 box.setPosX(0);
