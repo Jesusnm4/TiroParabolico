@@ -24,9 +24,8 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private static final long serialVersionUID = 1L;
     private boolean colXD;  // Verifica que el caja no colisione en la derecha
     private boolean colXI;  // Verifica que el caja no colisione en la izquierda
-    private boolean colYU;  // Verifica que el caja no colisione arriba
-    private boolean colYD;  // Verifica que el caja no colisione abajo
     private Caja box;     // Personaje caja
+    private Pelota ball;  // Personaje pelota
     private long tiempoActual;  // Contador de tiempo.
     private long tiempoInicial; // Contador de tiempo.
     private int auxiliar; // ayuda a generar el numero de pelotas
@@ -35,21 +34,18 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private int cantidad;  //numeros de pelotas a celebrar
     private Image dbImage; // Imagen a proyectar.
     private Graphics dbg; // Objeto grafico
-    private Pelota ball;  // Personaje pelota
     private boolean pausa;  // Verifica si el juego se tiene que pausar
     private int score;  //Variable para llevar la cuenta del puntaje
     private boolean izquierda;
     private boolean derecha;
-    private SoundClip rioClip;	//Sonido de fondo
-    private SoundClip junglaClip;	//Sonido de la jungla
-    private SoundClip monoClip;	//Sonido de mono
-
+    private SoundClip atrapaPelota;	//Sonido acierto
+    private SoundClip perdio; //Sonido chocaPelota con applet
+    
     public  tiroparabolico() {
         this.setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        rioClip = new SoundClip("sonidos/rio.wav");
-        monoClip = new SoundClip("sonidos/mono.wav");
-        junglaClip = new SoundClip("sonidos/jungla.wav");
+        atrapaPelota = new SoundClip("Sonidos/Atrapa.wav");
+        perdio = new SoundClip("Sonidos/Cae.wav");
         pausa = false;
         izquierda = false;
         derecha = false;
@@ -102,33 +98,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
         tiempoActual += tiempoTranscurrido;
         box.actualiza(tiempoTranscurrido);
-       
-        if (!pausa) {
-            if ((direccion == 1) && (!colYU)) {
-
-                box.setPosY(box.getPosY() + 10);
-            }
-            if ((direccion == 2) && (!colXD)) {
-
-                box.setPosX(box.getPosX() + 10);
-            }
-            if ((direccion == 3) && (!colYD)) {
-
-                box.setPosY(box.getPosY() - 10);
-            }
-            if ((direccion == 4) && (!colXI)) {
-
-                box.setPosX(box.getPosX() - 10);
-            }
-            if (colYU) {
-                box.setPosY(0);
-                colYU = false;
-            }
-            if (colYD) {
-                box.setPosY(getHeight() - box.getAlto());
-                colYD = false;
-            }
-
+      
             if (colXI) {
                 box.setPosX(0);
                 colXI = false;
@@ -139,7 +109,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             }
 
         }
-    }
+    
 
     public void checaColision() {
         if (box.getPosX() < 0) {
@@ -156,16 +126,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         } else {
             colXD = false;
         }
-        if (box.getPosY() < 0) {
-            colYU = true;
-        } else {
-            colYU = false;
-        }
-        if (box.getPosY() + box.getAlto() > getHeight()) {
-            colYD = true;
-        } else {
-            colYD = false;
-        }
+        
     }
 
     public void keyPressed(KeyEvent e) {
@@ -196,18 +157,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     }
 
     public void mousePressed(MouseEvent e) {
-        if (e.getX() > box.getPosX() && e.getY() < box.getPosY()) {
-            direccion = 1;
-        }
-        if (e.getX() > box.getPosX() && e.getY() > box.getPosY()) {
-            direccion = 2;
-        }
-        if (e.getX() < box.getPosX() && e.getY() > box.getPosY()) {
-            direccion = 3;
-        }
-        if (e.getX() < box.getPosX() && e.getY() < box.getPosY()) {
-            direccion = 4;
-        }
+     
     }
 
     public void mouseReleased(MouseEvent e) {

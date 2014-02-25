@@ -24,11 +24,26 @@ public class Caja extends Base {
      */
     public Caja(int posX, int posY) {
         super(posX, posY);
-        Image goku1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("imagenes/goku1.gif"));
-        Image goku2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("imagenes/goku2.gif"));
+        Image goku1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_000.gif"));
+        Image goku2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_001.gif"));
+        Image goku3 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_002.gif"));
+        Image goku4 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_003.gif"));
+        Image goku5 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_004.gif"));
+        Image goku6 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_005.gif"));
+        Image goku7 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_006.gif"));
+        Image goku8 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("Caja/frame_007.gif"));
+        
         animacion = new Animacion();
         animacion.sumaCuadro(goku1, 300);
         animacion.sumaCuadro(goku2, 300);
+        animacion.sumaCuadro(goku3, 300);
+        animacion.sumaCuadro(goku4, 300);
+        animacion.sumaCuadro(goku5, 300);
+        animacion.sumaCuadro(goku6, 300);
+        animacion.sumaCuadro(goku7, 300);
+        
+        animacion.sumaCuadro(goku2, 300);
+        
     }
 
     /**
