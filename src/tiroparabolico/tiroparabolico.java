@@ -60,7 +60,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         ball.setPosY(randY);
         box = new Caja(0, 0);
         box.setPosX((getWidth() / 2 - box.getAncho() / 2));
-        box.setPosY((getHeight() / 2 - box.getAlto() / 2));
+        box.setPosY((getHeight() - box.getAlto()));
         setBackground(Color.BLACK);
         setForeground(Color.RED);
         addKeyListener(this);
