@@ -185,8 +185,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     }
 
     public void paint1(Graphics g) {
-        g.drawString("Score:" + ball.getScore(), (getWidth() / 2) - 40, 60);
-
+        
         if (box != null && ball != null) {
 
             g.drawImage(box.getImagenI(), box.getPosX(), box.getPosY(), this);
