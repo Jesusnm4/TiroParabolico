@@ -26,8 +26,8 @@ public class Pelota extends Base {
 
     public Pelota(int posX, int posY) {
         super(posX, posY);
-        Image freezer1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("imagenes/freezer1.gif"));
-        Image freezer2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("imagenes/freezer2.gif"));
+        Image freezer1 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ImagenesPelota/frame_000.gif"));
+        Image freezer2 = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("ImageesPelota/frame_001.gif"));
         animacion = new Animacion();
         animacion.sumaCuadro(freezer1, 300);
         animacion.sumaCuadro(freezer2, 300);
