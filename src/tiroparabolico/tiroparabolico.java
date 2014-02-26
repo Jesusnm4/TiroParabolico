@@ -61,7 +61,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private boolean teclaIzquierda; //Para saber cuando el usuario oprime la tecla de la flecha izq
     private boolean play;
     private boolean sonidos; // bool que determina si se pueden hacer sonidos o no
-    private boolean objColision;
+    private boolean objColision; //checaColision de la pelota con el bote
     private boolean instrucciones;
     private boolean grabar; //Bandera para saber cuando grabar
     private boolean cargar; //Bandera para saber cuando cargar
@@ -73,15 +73,21 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private int posX_Pelota;
     private int posY_Pelota;
     private String[] arr;
-    private Image tubo;
+    private Image tubo; //Imagen del bote base
     private int ballXinicial;
     private int ballYinicial;
     private int velocidadXin;
     private int velocidadYin;
     private double tiempoP;
+    private Image instrucc; //Imagen de las instrucciones
 
     
-    
+    /*
+     * Método constructor de la clase TiroParabolico
+     * Inicializa variables, carga imágenes y sonidos, 
+     * crea los componentes de la interface y crea e
+     * inicializa el thread de la aplicación.
+     */
     public  tiroparabolico() {
         posX_Canasta = 0;
         posY_Canasta = 0;
@@ -124,7 +130,9 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         addMouseListener(this);
         addMouseMotionListener(this);
         URL eURL = this.getClass().getResource("tube.png");
+        URL aURL = this.getClass().getResource("Instrucciones.png");
         tubo = Toolkit.getDefaultToolkit().getImage(eURL);
+        instrucc = Toolkit.getDefaultToolkit().getImage(aURL);
         auxiliar = (int) (Math.random() * 3 + 1);
         // Declaras un hilo
         Thread th = new Thread(this);
@@ -139,7 +147,10 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     public void destroy() {
 
     }
-
+    /**
+     * Metodo run sobrescrito de la clase Thread. En este metodo se ejecuta el
+     * hilo, es un ciclo indefinido.
+     */
     public void run() {
         while (true) {
 
@@ -159,6 +170,10 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
 
     }
+    /**
+     * Metodo usado para actualizar la posicion de objetos y actualizar el
+     * tiempo de los frames
+     */
 
     public void actualiza() {
         
@@ -223,8 +238,10 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
 
     }
-
-
+    /**
+     * Metodo usado para checar las colisiones del objeto con las orillas del
+     * <code>Applet</code>.
+     */
     public void checaColision() {
         if (box.getPosX() < 111) {
 
@@ -256,40 +273,68 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
 
     }
-
+    /**
+     * Metodo <I>keyPressed</I> sobrescrito de la interface
+     * <code>KeyListener</code>.<P>
+     * En este metodo maneja el evento que se genera al presionar cualquier la
+     * tecla.
+     *
+     * @param e es el <code>evento</code> generado al presionar las teclas.
+     */
     public void keyPressed(KeyEvent e) {
-
+        //Si presiona tecla P bandera prende/apaga de pausa
         if (e.getKeyCode() == KeyEvent.VK_P) {
             pausa = !pausa;
         }
-        if (e.getKeyCode() == KeyEvent.VK_S) {
-           sonidos = !sonidos;
-        }
         
+       //Si presiona tecla S bandera prende/apaga mute or not al sonido
+        if (e.getKeyCode() == KeyEvent.VK_S) {
+            sonidos = !sonidos;
+        }
+       //Si presiona tecla flecha izq bandera prende/apaga para mover el bote
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             teclaIzquierda = true;
         }
+        //Si presiona tecla flecha der bandera prende/apaga para mover el bote
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             teclaDerecha = true;
         }
+        //Si presiona tecla I bandera prende/apaga para mostrar/quitar instrucciones
         if (e.getKeyCode() == KeyEvent.VK_I){
             instrucciones = !instrucciones;
             pausa = !pausa;
         }
+        //Si presiona tecla C bandera prende/apaga para cargar el juego (lee archivo)
         if (e.getKeyCode() == KeyEvent.VK_C){
             cargar = !cargar;
         }
+        //Si presiona tecla G bandera prende/apaga para grabar el juego
         if(e.getKeyCode() == KeyEvent.VK_G){
-            grabar = !grabar;
+            grabar = true;
         }
        
     }
 
-    
+      /**
+     * Metodo <I>keyTyped</I> sobrescrito de la interface
+     * <code>KeyListener</code>.<P>
+     * En este metodo maneja el evento que se genera al presionar una tecla que
+     * no es de accion.
+     *
+     * @param e es el <code>evento</code> que se genera en al presionar las
+     * teclas.
+     */
     public void keyTyped(KeyEvent e) {
 
     }
-
+    /**
+     * Metodo <I>keyReleased</I> sobrescrito de la interface
+     * <code>KeyListener</code>.<P>
+     * En este metodo maneja el evento que se genera al soltar la tecla
+     * presionada.
+     *
+     * @param e es el <code>evento</code> que se genera en al soltar las teclas.
+     */
     public void keyReleased(KeyEvent e) {
 
     }
@@ -321,6 +366,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
 
     public void mouseDragged(MouseEvent e) {
     }
+     /**
+     * Metodo que lee a informacion de un archivo y 
+     * actualiza variables
+     * @throws IOException
+     */
     public void leeArchivo()  {
           try
           {
@@ -353,6 +403,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
           }
         }
  
+    /**
+     * Metodo que agrega la informacion de variables al archivo.
+     *
+     * @throws IOException
+     */
     public void grabaArchivo() {
         try {
             PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
@@ -364,6 +419,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
        
     }
+    /**
+     * Metodo paint sobrescrito de la clase Applet, heredado de la clase
+     * Container. En este metodo se dibuja la imagen de fondo 
+     * g es el objeto grafico usado para dibujar.
+     */
     public void paint(Graphics g) {
 
         // Inicializan el DoubleBuffer
@@ -395,30 +455,26 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             g.drawImage(tubo, 20, getHeight() - 126 , this);
         }
         
-        if (box != null && ball != null) {
+         /*
+         ** Si pausa es verdadera e instrucciones tambien 
+         ** entonces se debe desplegar la imagen de instrucciones
+         */
+        if(instrucc != null && instrucciones && pausa){
+            g.drawImage(instrucc,0,0,this);
+        }
+        
+        if (box != null && ball != null && !instrucciones) {
 
             g.drawImage(box.getImagenI(), box.getPosX(), box.getPosY(), this);
             g.drawImage(ball.getImagenI(), ball.getPosX(), ball.getPosY(), this);
-            
-            
+
             /*
-            ** Si pausa es verdadera y no las instrucciones 
-            ** se pone el anuncio de pausa
-            */
-            
-            
+             ** Si pausa es verdadera y no las instrucciones 
+             ** se pone el anuncio de pausa
+             */
             if ((pausa) && (!instrucciones)) {
                 g.setFont(new Font("default", Font.BOLD, 16));
                 g.drawString(box.muestraPausa(), (box.getPosX()), (box.getPosY() + box.getAlto() / 2));
-            }
-            
-            /*
-            ** Si pausa es verdadera e instrucciones tambien 
-            ** entonces se debe desplegar la imagen de instrucciones
-            */
-            if((pausa) && (instrucciones)){
-                g.setFont(new Font("default", Font.BOLD, 16));
-                g.drawString("INSTRUCCIONES",box.getPosX(),box.getPosY());
             }
 
         }
