@@ -5,7 +5,14 @@
  */
 package tiroparabolico;
 
-import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.Toolkit;
 import java.awt.Cursor;
 import java.awt.BorderLayout;
@@ -38,13 +45,13 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private long tiempoActual;  // Contador de tiempo.
     private long tiempoInicial; // Contador de tiempo.
     private int auxiliar; // ayuda a generar el numero de pelotas
-    private int randX; //numero al azar usado para posicion en X
-    private int randY; //numero al azar usado para posicion en X
     private int cantidad;  //numeros de pelotas a celebrar
     private Image dbImage; // Imagen a proyectar.
     private Graphics dbg; // Objeto grafico
     private boolean pausa;  // Verifica si el juego se tiene que pausar
     private int score;  //Variable para llevar la cuenta del puntaje
+    private static final int WIDTH = 1000;    //Ancho del JFrame
+   private static final int HEIGHT = 600;    //Alto del JFrame
     private boolean izquierda;
     private boolean derecha;
     private SoundClip atrapaPelota;	//Sonido acierto
@@ -54,10 +61,32 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private JButton playStopBtn;
     private boolean play;
     private boolean sonidos; // bool que determina si se pueden hacer sonidos o no
+    private boolean objColision;
+    private boolean instrucciones;
+    private boolean grabar;
+    private boolean cargar;
+    private String nombreArchivo;
+    private int posX_Canasta;
+    private int posY_Canasta;
+    private int velocidad;
+    private int posX_Pelota;
+    private int posY_Pelota;
+    private String[] arr;
     
     
     public  tiroparabolico() {
+        posX_Canasta = 0;
+        posY_Canasta = 0;
+        velocidad = 0;
+        posX_Pelota = 0;
+        posY_Pelota = 0;
+        nombreArchivo = "TiroParabolico.txt";
         play = true;
+        grabar = false;
+        cargar = false;
+        grabar = false;
+        instrucciones = false;
+        objColision = false;
         this.setSize(700, 600);
         sonidos = true;
         teclaDerecha = false;
@@ -72,7 +101,6 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         ball = new Pelota (0,0);
         ball.setPosX(getWidth()/3);
         ball.setPosY(getHeight()/2);
-        ball.setPosY(randY);
         box = new Caja(0, 0);
         box.setPosX((getWidth() / 2 - box.getAncho() / 2));
         box.setPosY((getHeight() - box.getAlto()));
@@ -122,31 +150,49 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         tiempoActual += tiempoTranscurrido;
         ball.actualiza(tiempoTranscurrido);
         
-        if(teclaDerecha || teclaIzquierda){
+        if (cargar) {
+            leeArchivo();
+            cargar = false;
+        }
+
+        if (grabar) {
+            grabaArchivo();
+            grabar = false;
+        }
+        if (teclaDerecha || teclaIzquierda) {
             box.actualiza(tiempoTranscurrido);
         }
-   
-      
-            if (colXI) {
-                box.setPosX(0);
-                colXI = false;
-            }
-            if (colXD) {
-                box.setPosX(getWidth() - box.getAncho());
-                colXD = false;
-            }
-            
-            if (teclaDerecha) {
-                box.setPosX(box.getPosX() + 15);
-                teclaDerecha = false;
-            }
-            if (teclaIzquierda) {
-                box.setPosX(box.getPosX() - 15);
-                teclaIzquierda = false;
+
+        if (colXI) {
+            box.setPosX(0);
+            colXI = false;
+        }
+        if (colXD) {
+            box.setPosX(getWidth() - box.getAncho());
+            colXD = false;
+        }
+
+        if (teclaDerecha) {
+            box.setPosX(box.getPosX() + 15);
+            teclaDerecha = false;
+        }
+        if (teclaIzquierda) {
+            box.setPosX(box.getPosX() - 15);
+            teclaIzquierda = false;
+        }
+
+        if (objColision) {
+            if (sonidos) {
+                atrapaPelota.play();
+                objColision = false;
+            } else {
+                objColision = false;
             }
 
         }
-    
+
+    }
+
 
     public void checaColision() {
         if (box.getPosX() < 0) {
@@ -164,6 +210,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             colXD = false;
         }
         
+        if (ball.intersecta(box)) {
+
+            objColision = true;
+        }
+
     }
 
     public void keyPressed(KeyEvent e) {
@@ -172,7 +223,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             pausa = !pausa;
         }
         if (e.getKeyCode() == KeyEvent.VK_S) {
-            pausa = !pausa;
+           sonidos = !sonidos;
         }
         
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -180,6 +231,16 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             teclaDerecha = true;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_I){
+            instrucciones = !instrucciones;
+            pausa = !pausa;
+        }
+        if (e.getKeyCode() == KeyEvent.VK_C){
+            cargar = !cargar;
+        }
+        if(e.getKeyCode() == KeyEvent.VK_G){
+            grabar = !grabar;
         }
     }
 
@@ -213,7 +274,49 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
 
     public void mouseDragged(MouseEvent e) {
     }
+    public void leeArchivo()  {
+          try
+          {
+                BufferedReader fileIn;
+                try {
+                        fileIn = new BufferedReader(new FileReader(nombreArchivo));
+                } catch (FileNotFoundException e){
+                        File archivo = new File(nombreArchivo);
+                        PrintWriter fileOut = new PrintWriter(archivo);
+                        fileOut.println("50,50,100,100,10");
+                        fileOut.close();
+                        fileIn = new BufferedReader(new FileReader(nombreArchivo));
+                }
+                String dato = fileIn.readLine();
+                arr = dato.split (",");
+                int posX_Canasta = (Integer.parseInt(arr[0]));
+                int posY_Canasta = (Integer.parseInt(arr[1]));
+                int posX_Pelota = (Integer.parseInt(arr[2]));
+                int posY_Pelota = (Integer.parseInt(arr[3]));
+                int velocidad = (Integer.parseInt(arr[4]));
+               
+                fileIn.close();
+          }
+          catch(IOException ioe) {
+              int posX_Canasta = 0;
+              int posY_Canasta = 0;
+              int posX_Pelota = 0;
+              int posY_Pelota = 0;
+              int velocidad = 0;
+          }
+        }
+ 
+    public void grabaArchivo() {
+        try {
+            PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
 
+            fileOut.println("" + box.getPosX() + "," + box.getPosY() + "," + ball.getPosX() + "," + ball.getPosY() + "," + velocidad);
+            fileOut.close();
+        } catch (IOException ioe) {
+
+        }
+       
+    }
     public void paint(Graphics g) {
 
         // Inicializan el DoubleBuffer
@@ -233,14 +336,34 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     }
 
     public void paint1(Graphics g) {
+        
+        
+        g.setColor(Color.ORANGE);
+        
         if (box != null && ball != null) {
 
             g.drawImage(box.getImagenI(), box.getPosX(), box.getPosY(), this);
             g.drawImage(ball.getImagenI(), ball.getPosX(), ball.getPosY(), this);
-
-            if (pausa) {
+            
+            
+            /*
+            ** Si pausa es verdadera y no las instrucciones 
+            ** se pone el anuncio de pausa
+            */
+            
+            
+            if ((pausa) && (!instrucciones)) {
                 g.setFont(new Font("default", Font.BOLD, 16));
                 g.drawString(box.muestraPausa(), (box.getPosX()), (box.getPosY() + box.getAlto() / 2));
+            }
+            
+            /*
+            ** Si pausa es verdadera e instrucciones tambien 
+            ** entonces se debe desplegar la imagen de instrucciones
+            */
+            if((pausa) && (instrucciones)){
+                g.setFont(new Font("default", Font.BOLD, 16));
+                g.drawString("INSTRUCCIONES",box.getPosX(),box.getPosY());
             }
 
         }
