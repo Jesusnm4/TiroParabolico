@@ -167,7 +167,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         ball.actualiza(tiempoTranscurrido);
        
         if(ball.getMove()) {
-           tiempoP+=.01;
+           tiempoP+=.02;
            ultX = (int) (velocidadXin * .7071 * tiempoP);
            ultY = (int) ((velocidadYin * .7071*tiempoP) - (.5 * 9.8 * tiempoP * tiempoP));
            ball.setPosX(ball.getPosX() + ultX);
@@ -243,6 +243,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         
         if (ball.intersecta(box)) {
             objColision = true;
+            ball.setMove();
             ball.setPosX(ballXinicial);
             ball.setPosY(ballYinicial);
         }
@@ -293,8 +294,9 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
 
     public void mouseClicked(MouseEvent e) {
         if( ball.intersecta(e.getX(),e.getY()) && ball.getClickable()) {
-            velocidadXin = (int) (Math.random() * 93 + 1);
-            velocidadYin = (int) (Math.random() * 120 + 1);
+            // x 93   y 120
+            velocidadXin = (int) (Math.random() * 20 + 1);
+            velocidadYin = (int) (Math.random() * 30 + 1);
             ball.setMove();
         }
     }
