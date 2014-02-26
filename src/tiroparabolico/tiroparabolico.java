@@ -51,30 +51,32 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private boolean pausa;  // Verifica si el juego se tiene que pausar
     private int score;  //Variable para llevar la cuenta del puntaje
     private static final int WIDTH = 1000;    //Ancho del JFrame
-   private static final int HEIGHT = 600;    //Alto del JFrame
+    private static final int HEIGHT = 600;    //Alto del JFrame
     private boolean izquierda;
     private boolean derecha;
     private SoundClip atrapaPelota;	//Sonido acierto
     private SoundClip perdio; //Sonido chocaPelota con applet
-    private boolean teclaDerecha;
-    private boolean teclaIzquierda;
-    private JButton playStopBtn;
+    private boolean teclaDerecha; //Para saber cuando el usuario oprime la tecla de la flecha derecha
+    private boolean teclaIzquierda; //Para saber cuando el usuario oprime la tecla de la flecha izq
     private boolean play;
     private boolean sonidos; // bool que determina si se pueden hacer sonidos o no
     private boolean objColision;
     private boolean instrucciones;
-    private boolean grabar;
-    private boolean cargar;
-    private String nombreArchivo;
-    private int posX_Canasta;
+    private boolean grabar; //Bandera para saber cuando grabar
+    private boolean cargar; //Bandera para saber cuando cargar
+    private String nombreArchivo; //Archivo donde guardo a la hora de grabar
+    private int posX_Canasta; 
     private int posY_Canasta;
     private int velocidad;
     private int posX_Pelota;
     private int posY_Pelota;
     private String[] arr;
+
     
     
     public  tiroparabolico() {
+        teclaArriba = false;
+        teclaAbajo = false;
         posX_Canasta = 0;
         posY_Canasta = 0;
         velocidad = 0;
@@ -180,7 +182,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             box.setPosX(box.getPosX() - 15);
             teclaIzquierda = false;
         }
-
+      
         if (objColision) {
             if (sonidos) {
                 atrapaPelota.play();
@@ -242,6 +244,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         if(e.getKeyCode() == KeyEvent.VK_G){
             grabar = !grabar;
         }
+       
     }
 
     
