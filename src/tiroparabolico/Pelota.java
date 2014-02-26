@@ -11,7 +11,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 
 public class Pelota extends Base {
-
+    private boolean move = false;
+    private boolean clickable = true;
     private int velocidad = ((int) (Math.random() * 6 + 3));  //genera la velocidad entre 3 y 6
     private static int score = 0;
 
@@ -55,7 +56,23 @@ public class Pelota extends Base {
     public int getScore() {
         return score;
     }
-
+    
+    public void setMove() {
+        move = !move;
+    }
+    
+    public boolean getMove() {
+        return move;
+    }
+    
+    public void setClickable(boolean x) {
+        clickable = x;
+    }
+    
+    public boolean getClickable () {
+        return clickable;
+    }
+    
     /**
      * Metodo que permite aumentar el score en 1.
      *

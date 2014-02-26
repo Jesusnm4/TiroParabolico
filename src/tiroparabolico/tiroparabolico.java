@@ -34,6 +34,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.net.URL;
 
 public class tiroparabolico extends JFrame implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
@@ -67,19 +68,30 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private String nombreArchivo; //Archivo donde guardo a la hora de grabar
     private int posX_Canasta; 
     private int posY_Canasta;
-    private int velocidad;
+    private int ultX;
+    private int ultY;
     private int posX_Pelota;
     private int posY_Pelota;
     private String[] arr;
+    private Image tubo;
+    private int ballXinicial;
+    private int ballYinicial;
+    private int velocidadXin;
+    private int velocidadYin;
+    private double tiempoP;
 
     
     
     public  tiroparabolico() {
         posX_Canasta = 0;
         posY_Canasta = 0;
-        velocidad = 0;
+        ultX = 0;
+        ultY = 0;
+        velocidadXin = 0;
+        velocidadYin = 0;
         posX_Pelota = 0;
         posY_Pelota = 0;
+        tiempoP = 0;
         nombreArchivo = "TiroParabolico.txt";
         play = true;
         grabar = false;
@@ -98,9 +110,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         izquierda = false;
         derecha = false;
         score = 0;
+        ballXinicial = 0;
+        ballYinicial = (getHeight() - 120 - 112);
         ball = new Pelota (0,0);
-        ball.setPosX(getWidth()/3);
-        ball.setPosY(getHeight()/2);
+        ball.setPosX(ballXinicial);
+        ball.setPosY(ballYinicial);
         box = new Caja(0, 0);
         box.setPosX((getWidth() / 2 - box.getAncho() / 2));
         box.setPosY((getHeight() - box.getAlto()));
@@ -109,6 +123,8 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         addKeyListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
+        URL eURL = this.getClass().getResource("tube.png");
+        tubo = Toolkit.getDefaultToolkit().getImage(eURL);
         auxiliar = (int) (Math.random() * 3 + 1);
         // Declaras un hilo
         Thread th = new Thread(this);
@@ -145,10 +161,25 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     }
 
     public void actualiza() {
-
+        
         long tiempoTranscurrido = System.currentTimeMillis() - tiempoActual;
         tiempoActual += tiempoTranscurrido;
         ball.actualiza(tiempoTranscurrido);
+       
+        if(ball.getMove()) {
+           tiempoP+=.01;
+           ultX = (int) (velocidadXin * .7071 * tiempoP);
+           ultY = (int) ((velocidadYin * .7071*tiempoP) - (.5 * 9.8 * tiempoP * tiempoP));
+           ball.setPosX(ball.getPosX() + ultX);
+           ball.setPosY(-ultY + ball.getPosX());
+        }
+        
+        if(ball.getPosX() == ballXinicial && ball.getPosY() == ballYinicial) {
+            ball.setClickable(true);
+        }
+        else{
+            ball.setClickable(false);
+        }
         
         if (cargar) {
             leeArchivo();
@@ -164,7 +195,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
 
         if (colXI) {
-            box.setPosX(0);
+            box.setPosX(111);
             colXI = false;
         }
         if (colXD) {
@@ -195,7 +226,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
 
 
     public void checaColision() {
-        if (box.getPosX() < 0) {
+        if (box.getPosX() < 111) {
 
             colXI = true;
 
@@ -211,8 +242,14 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         }
         
         if (ball.intersecta(box)) {
-
             objColision = true;
+            ball.setPosX(ballXinicial);
+            ball.setPosY(ballYinicial);
+        }
+        if (ball.getPosY() + ball.getAlto() > getHeight()) {
+            ball.setMove();
+            ball.setPosX(ballXinicial);
+            ball.setPosY(ballYinicial);
         }
 
     }
@@ -255,6 +292,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     }
 
     public void mouseClicked(MouseEvent e) {
+        if( ball.intersecta(e.getX(),e.getY()) && ball.getClickable()) {
+            velocidadXin = (int) (Math.random() * 93 + 1);
+            velocidadYin = (int) (Math.random() * 120 + 1);
+            ball.setMove();
+        }
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -311,7 +353,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         try {
             PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
 
-            fileOut.println("" + box.getPosX() + "," + box.getPosY() + "," + ball.getPosX() + "," + ball.getPosY() + "," + velocidad);
+            fileOut.println("" + box.getPosX() + "," + box.getPosY() + "," + ball.getPosX() + "," + ball.getPosY() + "," + ultX + "," + ultY);
             fileOut.close();
         } catch (IOException ioe) {
 
@@ -340,6 +382,10 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         
         
         g.setColor(Color.ORANGE);
+        
+        if(tubo !=null) {
+            g.drawImage(tubo, 20, getHeight() - 126 , this);
+        }
         
         if (box != null && ball != null) {
 
