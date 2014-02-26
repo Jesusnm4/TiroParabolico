@@ -167,11 +167,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         ball.actualiza(tiempoTranscurrido);
        
         if(ball.getMove()) {
-           tiempoP+=.02;
-           ultX = (int) (velocidadXin * .7071 * tiempoP);
-           ultY = (int) ((velocidadYin * .7071*tiempoP) - (.5 * 9.8 * tiempoP * tiempoP));
+           tiempoP+=.2;
+           ultX = (int) (velocidadXin * .8060 * tiempoP);
+           ultY = (int) ((velocidadYin * 40.51 *tiempoP) - (.5 * 9.8 * tiempoP * tiempoP));
            ball.setPosX(ball.getPosX() + ultX);
-           ball.setPosY(-ultY + ball.getPosX());
+           ball.setPosY(-ultY + ball.getPosY());
         }
         
         if(ball.getPosX() == ballXinicial && ball.getPosY() == ballYinicial) {
@@ -246,11 +246,13 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             ball.setMove();
             ball.setPosX(ballXinicial);
             ball.setPosY(ballYinicial);
+            tiempoP=0;
         }
         if (ball.getPosY() + ball.getAlto() > getHeight()) {
             ball.setMove();
             ball.setPosX(ballXinicial);
             ball.setPosY(ballYinicial);
+            tiempoP=0;
         }
 
     }
@@ -295,8 +297,8 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     public void mouseClicked(MouseEvent e) {
         if( ball.intersecta(e.getX(),e.getY()) && ball.getClickable()) {
             // x 93   y 120
-            velocidadXin = (int) (Math.random() * 20 + 1);
-            velocidadYin = (int) (Math.random() * 30 + 1);
+            velocidadXin = (int) (Math.random() * 3 + 1);
+            velocidadYin = (int) (Math.random() * 10 + 1);
             ball.setMove();
         }
     }
@@ -384,6 +386,10 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         
         
         g.setColor(Color.ORANGE);
+        g.drawString("posX:" + ball.getPosX(), 600, 50);
+        g.drawString("posY:" + ball.getPosY(), 600, 70);
+        g.drawString("velX:" + ultX, 600, 90);
+        g.drawString("velY:" + ultY, 600, 110);
         
         if(tubo !=null) {
             g.drawImage(tubo, 20, getHeight() - 126 , this);
