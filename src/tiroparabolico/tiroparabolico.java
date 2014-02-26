@@ -75,8 +75,6 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     
     
     public  tiroparabolico() {
-        teclaArriba = false;
-        teclaAbajo = false;
         posX_Canasta = 0;
         posY_Canasta = 0;
         velocidad = 0;
