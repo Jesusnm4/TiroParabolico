@@ -84,6 +84,8 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
     private int perdidos;
     private double dificultad;
     private Image instrucc; //Imagen de las instrucciones
+    private int move1;
+    private int sonidos1;
 
     
     /*
@@ -93,6 +95,8 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
      * inicializa el thread de la aplicación.
      */
     public  tiroparabolico() {
+        sonidos1 = 0;
+        move1 = 0;
         posX_Canasta = 0;
         posY_Canasta = 0;
         ultX = 0;
@@ -164,7 +168,7 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         while (true) {
 
             //Actualiza la animación
-            if (!pausa) {
+            if (!pausa && vidas > 0) {
                 actualiza();
                 checaColision();
             }
@@ -405,20 +409,39 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
                 }
                 String dato = fileIn.readLine();
                 arr = dato.split (",");
-                int posX_Canasta = (Integer.parseInt(arr[0]));
-                int posY_Canasta = (Integer.parseInt(arr[1]));
-                int posX_Pelota = (Integer.parseInt(arr[2]));
-                int posY_Pelota = (Integer.parseInt(arr[3]));
-                int velocidad = (Integer.parseInt(arr[4]));
-               
+                score = (Integer.parseInt(arr[0]));
+                box.setPosX((Integer.parseInt(arr[1])));
+                box.setPosY((Integer.parseInt(arr[2])));
+                dificultad = (Double.parseDouble(arr[3]));
+                velocidadXin = (Integer.parseInt(arr[4]));
+                velocidadYin = (Integer.parseInt(arr[5]));
+                tiempoP = (Double.parseDouble(arr[6]));
+                perdidos = (Integer.parseInt(arr[7]));
+                move = (Boolean.parseBoolean(arr[8]));
+                sonidos = (Boolean.parseBoolean(arr[9]));
+                vidas = (Integer.parseInt(arr[10]));
+                ball.setPosX((Integer.parseInt(arr[11])));
+                ball.setPosY((Integer.parseInt(arr[12])));
+                ball.setMove((Boolean.parseBoolean(arr[13])));
+                ball.setClickable((Boolean.parseBoolean(arr[14])));
                 fileIn.close();
           }
           catch(IOException ioe) {
-              int posX_Canasta = 0;
-              int posY_Canasta = 0;
-              int posX_Pelota = 0;
-              int posY_Pelota = 0;
-              int velocidad = 0;
+              score = 0;
+              box.setPosX(0);
+              box.setPosY(0);
+              dificultad = 0;
+              velocidadXin = 0;
+              velocidadYin = 0;
+              tiempoP = 0;
+              perdidos = 0;
+              move = false;
+              sonidos = false;
+              vidas = 0;
+              ball.setPosX(0);
+              ball.setPosY(0);
+              ball.setMove(false);
+              ball.setClickable(false);
           }
         }
  
@@ -428,10 +451,11 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
      * @throws IOException
      */
     public void grabaArchivo() {
+        
         try {
             PrintWriter fileOut = new PrintWriter(new FileWriter(nombreArchivo));
 
-            fileOut.println("" + box.getPosX() + "," + box.getPosY() + "," + ball.getPosX() + "," + ball.getPosY() + "," + ultX + "," + ultY);
+            fileOut.println("" + score + "," + box.getPosX() + "," + box.getPosY() + "," + dificultad + "," + velocidadXin + "," + velocidadYin +","+tiempoP+","+perdidos+","+move+","+sonidos+","+vidas+","+ball.getPosX()+","+ball.getPosX()+","+ball.getMove()+","+ball.getClickable());
             fileOut.close();
         } catch (IOException ioe) {
 
@@ -465,8 +489,12 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
         
         
         g.setColor(Color.ORANGE);
-        g.drawString("Score: " + ball.getScore(), 600 , 50);
-        g.drawString("Vidas: " + vidas, 100 , 50);
+        
+        if(vidas > 0) {
+            g.drawString("Score: " + ball.getScore(), 600 , 50);
+            g.drawString("Vidas: " + vidas, 100 , 50);
+        }
+        
         if(tubo !=null) {
             g.drawImage(tubo, 20, getHeight() - 126 , this);
         }
@@ -484,6 +512,10 @@ public class tiroparabolico extends JFrame implements Runnable, KeyListener, Mou
             g.drawImage(box.getImagenI(), box.getPosX(), box.getPosY(), this);
             g.drawImage(ball.getImagenI(), ball.getPosX(), ball.getPosY(), this);
 
+            if(vidas == 0) {
+                g.setFont(new Font("default", Font.BOLD, 40));
+                g.drawString( "GAME OVER", (getWidth()/2)-100 , getHeight()/2);
+            }
             /*
              ** Si pausa es verdadera y no las instrucciones 
              ** se pone el anuncio de pausa
