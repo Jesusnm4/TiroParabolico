@@ -11,8 +11,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 
 public class Pelota extends Base {
-    private boolean move = false;
-    private boolean clickable = true;
+    private boolean move;
+    private boolean clickable;
     private int velocidad = ((int) (Math.random() * 6 + 3));  //genera la velocidad entre 3 y 6
     private static int score = 0;
 
@@ -36,7 +36,8 @@ public class Pelota extends Base {
         animacion.sumaCuadro(freezer2, 300);
         animacion.sumaCuadro(freezer3, 300);
         animacion.sumaCuadro(freezer4, 300);
-        
+        move = false;
+        clickable = true;
     }
 
     /**
@@ -57,8 +58,8 @@ public class Pelota extends Base {
         return score;
     }
     
-    public void setMove() {
-        move = !move;
+    public void setMove(boolean x) {
+        move = x;
     }
     
     public boolean getMove() {
@@ -78,7 +79,7 @@ public class Pelota extends Base {
      *
      */
     public void aumentaScore() {
-        score++;
+        score+=2;
     }
 
 }
